@@ -15,6 +15,8 @@ from brokers.oanda import oanda_import
 from brokers.metatrader import metatrader_import, get_metatrader_orders, extract_data
 import xlrd
 import requests
+import locale
+from os import remove
 
 load_dotenv()
 
@@ -89,6 +91,8 @@ class Reports_filters(db.Model):
     margenOperacional=db.Column(db.String(1000))
     margenNeto=db.Column(db.String(1000))
     gastosVentas=db.Column(db.String(1000))
+    roa=db.Column(db.String(1000))
+    roe=db.Column(db.String(1000))
     last_date= db.Column(db.String(50))
     
 class Reports(db.Model):
@@ -245,10 +249,12 @@ def siigo_account_anual():
     "username": tokens['id'],
     "access_key": tokens['pass']
     }
-    
-    response = requests.request("POST", "https://api.siigo.com/auth",json=params).json()
-
-    access_token=response["access_token"]
+    try:
+        response = requests.request("POST", "https://api.siigo.com/auth",json=params).json()
+        
+        access_token=response["access_token"]
+    except:
+        return jsonify({"success": False})
     
     
     headers ={
@@ -316,17 +322,40 @@ def siigo_account_anual():
             urlArchivo=response['file_url']  
             print(urlArchivo)
             response = requests.get(urlArchivo)
-            
-            
-            with open('balance_general.xlsx', 'wb') as file:
+            archivo=user+'.xlsx'
+            #remove("balance_general.xlsx")
+            with open(archivo, 'wb') as file:
                  file.write(response.content)
             #webbrowser.get(chrome_path).open(urlArchivo)
             print("exito")
         except Exception as err:
-            print("error")  
+            return jsonify({"success": False})
         
-        
-        df = pd.read_excel('balance_general.xlsx',header=8,engine='openpyxl')
+        try:
+            df = pd.read_excel(archivo,header=4,engine='openpyxl')
+        except Exception as err:
+            print(err)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista.append(0.0)
+            lista_años.append(lista)
+            continue
         df.columns = ['Nivel',
                      'Transaccional','Codigo','Nombre','Saldo','Movimiento','Movimiento cred','Saldo final']
         df[df=='Saldo final']=np.NaN
@@ -340,9 +369,9 @@ def siigo_account_anual():
         print(df['Codigo'])
         cont = df[df['Codigo'] == 41]
         try:
-            costoVentas= df[df['Codigo'] == 6]
-        except:
             costoVentas= df[df['Codigo'] == 7]
+        except:
+            costoVentas= df[df['Codigo'] == 6]
         try:
             costoMateria= df[df['Codigo'] == 61]
         except:
@@ -429,6 +458,22 @@ def siigo_account_anual():
             numeroCostoMateria=abs(float(costoMateria['Saldo final']))
         except:
             numeroCostoMateria=0.0
+        try:
+            activos=abs(float(df[df['Codigo'] == 1]['Saldo final']))
+        except Exception as err:
+            activos=0.0
+        try:
+            patrimonio=abs(float(df[df['Codigo'] == 3]['Saldo final']))
+        except:
+            patrimonio=0.0
+        try:
+            roa=abs(round((utilidad_operacional/activos)*100,0))
+        except:
+            roa=0.0
+        try:
+            roe=abs(round((utilidad_neta/patrimonio)*100,0))
+        except:
+            roe=0.0
         """
         saldo.append(numero)
         ventas.append(numeroCosto)
@@ -462,6 +507,8 @@ def siigo_account_anual():
         lista.append(margen_operacional)
         lista.append(margen_neto)
         lista.append(gastos_ventas)
+        lista.append(roa)
+        lista.append(roe)
         lista_años.append(lista)
     if not update:
                 try:   
@@ -520,6 +567,8 @@ def siigo_account_trimestral(user,token):
         update_margenOperacional=eval(new_report.margenOperacional)
         update_margenNeto=eval(new_report.margenNeto)
         update_gastosVentas=eval(new_report.gastosVentas)
+        update_roa=eval(new_report.roa)
+        update_roe=eval(new_report.roe)
         last_date=new_report.last_date
         last_date = datetime.strptime(last_date, '%Y-%m-%d')
         yearLastDate=int(last_date.strftime('%Y'))
@@ -549,6 +598,8 @@ def siigo_account_trimestral(user,token):
       margenBrut=[]
       margenOperacional=[]
       margenNeto=[]
+      roa_list=[]
+      roe_list=[]
       while monthStart <= 12:
         if(year==presentYear and monthStart>=monthActual):
            break
@@ -567,17 +618,39 @@ def siigo_account_trimestral(user,token):
             urlArchivo=response['file_url']  
             print(urlArchivo)
             response = requests.get(urlArchivo)
-            
-            
-            with open('balance_general.xlsx', 'wb') as file:
+            archivo=user+'.xlsx'
+            #remove('balance_general.xlsx')
+            with open(archivo, 'wb') as file:
                  file.write(response.content)
             #webbrowser.get(chrome_path).open(urlArchivo)
             print("exito")
         except Exception as err:
-            print("error")  
+            return jsonify({"success": False})
         
-        
-        df = pd.read_excel('balance_general.xlsx',header=8,engine='openpyxl')
+        try:
+            df = pd.read_excel(archivo,header=4,engine='openpyxl')
+        except Exception as err:
+            print(err)
+            saldo.append(0.0)
+            ventas.append(0.0)
+            materia_prima.append(0.0)
+            utilidad.append(0.0)
+            gastosAdmon.append(0.0)
+            gastosPer.append(0.0)
+            gastosHono.append(0.0)
+            gastosImp.append(0.0)
+            gastosArrend.append(0.0)
+            gastosServ.append(0.0)
+            gastosLegales.append(0.0)
+            gastosViaje.append(0.0)
+            gastosDiver.append(0.0)
+            margenBrut.append(0.0)
+            margenOperacional.append(0.0)
+            margenNeto.append(0.0)
+            gastosVent.append(0.0)
+            roa.append(0.0)
+            roe.append(0.0)
+            continue
         df.columns = ['Nivel',
                      'Transaccional','Codigo','Nombre','Saldo','Movimiento','Movimiento cred','Saldo final']
         df[df=='Saldo final']=np.NaN
@@ -591,9 +664,9 @@ def siigo_account_trimestral(user,token):
         print(df['Codigo'])
         cont = df[df['Codigo'] == 41]
         try:
-            costoVentas= df[df['Codigo'] == 6]
-        except:
             costoVentas= df[df['Codigo'] == 7]
+        except:
+            costoVentas= df[df['Codigo'] == 6]
         costoMateria= df[df['Codigo'] == 61]
         try:
             ingresos_no_operac=abs(float(df[df['Codigo'] == 42]['Saldo final']))
@@ -676,6 +749,23 @@ def siigo_account_trimestral(user,token):
             numeroCostoMateria=abs(float(costoMateria['Saldo final']))
         except:
             numeroCostoMateria=0.0
+        try:
+            activos=abs(float(df[df['Codigo'] == 1]['Saldo final']))
+        except Exception as err:
+            activos=0.0
+        try:
+            patrimonio=abs(float(df[df['Codigo'] == 3]['Saldo final']))
+        except:
+            patrimonio=0.0
+            
+        try:
+            roa=abs(round((utilidad_operacional/activos)*100,0))
+        except:
+            roa=0.0
+        try:
+            roe=abs(round((utilidad_neta/patrimonio)*100,0))
+        except:
+            roe=0.0
         if not update:
             saldo.append(numero)
             ventas.append(numeroCosto)
@@ -694,6 +784,8 @@ def siigo_account_trimestral(user,token):
             margenOperacional.append(margen_operacional)
             margenNeto.append(margen_neto)
             gastosVent.append(gastos_ventas)
+            roa_list.append(roa)
+            roe_list.append(roe)
         else:
             update_saldos.append(numero)
             update_costoV.append(numeroCosto)
@@ -712,9 +804,11 @@ def siigo_account_trimestral(user,token):
             update_margenOperacional.append(margen_operacional)
             update_margenNeto.append(margen_neto)
             update_gastosVentas.append(gastos_ventas)
+            update_roa.append(roa)
+            update_roe.append(roe)
       if not update and saldo!=[]:
           try:         
-            new_report = Reports_filters(user_id=user,Año=str(year),saldos=str(saldo),costoV=str(ventas),costoM=str(materia_prima),utilidad=str(utilidad),gastosAdmon=str(gastosAdmon),gastosPer=str(gastosPer),gastosHono=str(gastosHono),gastosImp=str(gastosImp),gastosArrend=str(gastosArrend),gastosServ=str(gastosServ),gastosLegales=str(gastosLegales),gastosViaje=str(gastosViaje),gastosDiver=str(gastosDiver),margenBruto=str(margenBrut),margenOperacional=str(margenOperacional),margenNeto=str(margenNeto),gastosVentas=str(gastosVent),last_date=str(endDate))
+            new_report = Reports_filters(user_id=user,Año=str(year),saldos=str(saldo),costoV=str(ventas),costoM=str(materia_prima),utilidad=str(utilidad),gastosAdmon=str(gastosAdmon),gastosPer=str(gastosPer),gastosHono=str(gastosHono),gastosImp=str(gastosImp),gastosArrend=str(gastosArrend),gastosServ=str(gastosServ),gastosLegales=str(gastosLegales),gastosViaje=str(gastosViaje),gastosDiver=str(gastosDiver),margenBruto=str(margenBrut),margenOperacional=str(margenOperacional),margenNeto=str(margenNeto),gastosVentas=str(gastosVent),roa=str(roa_list),roe=str(roe_list),last_date=str(endDate))
             db.session.add(new_report)
             db.session.commit()
           except:
@@ -737,6 +831,8 @@ def siigo_account_trimestral(user,token):
             new_report.margenOperacional=str(update_margenOperacional)
             new_report.margenNeto=str(update_margenNeto)
             new_report.gastosVentas=str(update_gastosVentas)
+            new_report.roa=str(update_roa)
+            new_report.roe=str(update_roe)
             new_report.last_date=str(endDate)
             db.session.commit()
       monthStart=1
@@ -948,6 +1044,7 @@ def get_chartdata():
 def get_reports_siigo():
     data = request.json
     filters=data['filters']
+    labels_roaroe=[]
     if filters['brokers']!=[]:
         reports = Reports_filters.query.filter_by(user_id=data["userId"],Año=str(filters['brokers'][0])).first()
         if reports==None:
@@ -978,13 +1075,19 @@ def get_reports_siigo():
         margenOperacional=eval(reports.margenOperacional)
         margenNeto=eval(reports.margenNeto)
         gastosVentas=eval(reports.gastosVentas)
-        i=len(total_saldo)-1
+        roa=eval(reports.roa)
+        roe=eval(reports.roe)
+        #i=len(total_saldo)-1
+        i=1
         crecimiento=[]
         crecimiento.append(0.0)
-        while i!=0:
-            valorCrecim=int(((total_saldo[i]/total_saldo[i-1])-1)*100)
-            crecimiento.append(valorCrecim)
-            i=i-1
+        try:
+            while i<len(total_saldo):
+                valorCrecim=round(float(((total_saldo[i]/total_saldo[i-1])-1)*100))
+                crecimiento.append(valorCrecim)
+                i=i+1
+        except Exception as err:
+            crecimiento.append(0.0)
         """
         try:
             valorCrecim1=int(((total_saldo[3]/total_saldo[2])-1)*100)
@@ -1001,10 +1104,13 @@ def get_reports_siigo():
         """
         i=0
         porcentCostVentas=[]
-        while i<len(total_saldo):
-            procentCostVentas=abs(int((total_costoV[i]/total_saldo[i])*100))
-            porcentCostVentas.append(procentCostVentas)
-            i=i+1
+        try:
+            while i<len(total_saldo):
+                procentCostVentas=abs(round(float((total_costoV[i]/total_saldo[i])*100)))
+                porcentCostVentas.append(procentCostVentas)
+                i=i+1
+        except Exception as err:
+            porcentCostVentas.append(0.0)
         """
         try:
             procentCostVentas1=abs(int((total_costoV[0]/total_saldo[0])*100))
@@ -1025,10 +1131,13 @@ def get_reports_siigo():
         """
         i=0
         porcentCostGastos=[]
-        while i<len(gastosAdmon):
-            procentCostGastos_=int(((gastosAdmon[i]+gastosVentas[i])/total_saldo[0])*100)
-            porcentCostGastos.append(procentCostGastos_)
-            i=i+1
+        try:
+            while i<len(gastosAdmon):
+                procentCostGastos_=round(float(((gastosAdmon[i]+gastosVentas[i])/total_saldo[i])*100))
+                porcentCostGastos.append(procentCostGastos_)
+                i=i+1
+        except Exception as err:
+             porcentCostGastos.append(0.0)
         """
         try:
             procentCostGastos1=int(((gastosAdmon[0]+gastosVentas[0])/total_saldo[0])*100)
@@ -1084,9 +1193,20 @@ def get_reports_siigo():
         if procentCostGastos4!=0.0:
             porcentCostGastos.append(procentCostGastos4)
         """
+       
+        max_gastosVentas=max(gastosVentas)
+        max_gastosAdmon=max(gastosAdmon)+max_gastosVentas
+        max_saldo=max(total_saldo)+max_gastosAdmon
+        
+        max_costosVentas=max(total_costoV)
+        max_saldoCostos=max(total_saldo)+max_costosVentas
         textoRadiaBarUltimo="4-3"
         textoRadiaBarAnterior="3-2"
-        labels=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']
+        labels=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+        mes=0
+        while mes<len(roa):
+         labels_roaroe.append(labels[mes])
+         mes+=1
         #total_margen_bruto=float(margenBruto[0])+float(margenBruto[1])+float(margenBruto[2])+float(margenBruto[3])
         total_margen_bruto=0.0
     else:
@@ -1121,50 +1241,52 @@ def get_reports_siigo():
         margenOperacional=[AÑO_2021[14],AÑO_2022[14],AÑO_2023[14],AÑO_2024[14]]
         margenNeto=[AÑO_2021[15],AÑO_2022[15],AÑO_2023[15],AÑO_2024[15]]
         gastosVentas=[AÑO_2021[16],AÑO_2022[16],AÑO_2023[16],AÑO_2024[16]]
+        roa=[AÑO_2021[17],AÑO_2022[17],AÑO_2023[17],AÑO_2024[17]]
+        roe=[AÑO_2021[18],AÑO_2022[18],AÑO_2023[18],AÑO_2024[18]]
         try:
-            valorCrecim1=int(((AÑO_2022[0]/AÑO_2021[0])-1)*100)
+            valorCrecim1=round(float(((AÑO_2022[0]/AÑO_2021[0])-1)*100))
         except:
             valorCrecim1=0.0
         try:
-            valorCrecim2=int(((AÑO_2023[0]/AÑO_2022[0])-1)*100)
+            valorCrecim2=round(float(((AÑO_2023[0]/AÑO_2022[0])-1)*100))
         except:
             valorCrecim2=0.0
         try:
-            valorrCrecim3=int(((AÑO_2024[0]/AÑO_2023[0])-1)*100)
+            valorrCrecim3=round(float(((AÑO_2024[0]/AÑO_2023[0])-1)*100))
         except:
             valorrCrecim3=0.0
         try:
-            procentCostVentas1=abs(int((AÑO_2021[1]/AÑO_2021[0])*100))
+            procentCostVentas1=abs(round(float((AÑO_2021[1]/AÑO_2021[0])*100)))
         except:
             procentCostVentas1=0.0
         try:
-            procentCostVentas2=abs(int((AÑO_2022[1]/AÑO_2022[0])*100))
+            procentCostVentas2=abs(round(float((AÑO_2022[1]/AÑO_2022[0])*100)))
         except:
             procentCostVentas2=0.0
         try:
-            procentCostVentas3=abs(int((AÑO_2023[1]/AÑO_2023[0])*100))
+            procentCostVentas3=abs(round(float((AÑO_2023[1]/AÑO_2023[0])*100)))
         except:
             procentCostVentas3=0.0 
         try:
-            procentCostVentas4=abs(int((AÑO_2024[1]/AÑO_2024[0])*100))
+            procentCostVentas4=abs(round(float((AÑO_2024[1]/AÑO_2024[0])*100)))
         except:
             procentCostVentas4=0.0   
             
             
         try:
-            procentCostGastos1=int(((AÑO_2021[4]+AÑO_2021[16])/AÑO_2021[0])*100)
+            procentCostGastos1=round(float(((AÑO_2021[4]+AÑO_2021[16])/AÑO_2021[0])*100))
         except:
             procentCostGastos1=0.0
         try:
-            procentCostGastos2=int(((AÑO_2022[4]+AÑO_2022[16])/AÑO_2022[0])*100)
+            procentCostGastos2=round(float(((AÑO_2022[4]+AÑO_2022[16])/AÑO_2022[0])*100))
         except:
             procentCostGastos2=0.0
         try:
-            procentCostGastos3=int(((AÑO_2023[4]+AÑO_2023[16])/AÑO_2023[0])*100)
+            procentCostGastos3=round(float(((AÑO_2023[4]+AÑO_2023[16])/AÑO_2023[0])*100))
         except:
             procentCostGastos3=0.0 
         try:
-            procentCostGastos4=int(((AÑO_2024[4]+AÑO_2024[16])/AÑO_2024[0])*100)
+            procentCostGastos4=round(float(((AÑO_2024[4]+AÑO_2024[16])/AÑO_2024[0])*100))
         except:
             procentCostGastos4=0.0   
         try:
@@ -1181,9 +1303,20 @@ def get_reports_siigo():
         porcentCostVentas=[procentCostVentas1,procentCostVentas2,procentCostVentas3,procentCostVentas4]
         porcentCostGastos=[procentCostGastos1,procentCostGastos2,procentCostGastos3,procentCostGastos4]
         labels=['2021','2022','2023','2024']
+        año=0
+        while año<len(roa):
+         labels_roaroe.append(labels[año])
+         año+=1
+        
+        max_gastosVentas=max(gastosVentas)
+        max_gastosAdmon=max(gastosAdmon)+max_gastosVentas
+        max_saldo=max(total_saldo)+max_gastosAdmon
+        
+        max_costosVentas=max(total_costoV)
+        max_saldoCostos=max(total_saldo)+max_costosVentas
         #total_margen_bruto=float(margenBruto[0])+float(margenBruto[1])+float(margenBruto[2])+float(margenBruto[3])
         total_margen_bruto=0.0
-    return jsonify({"saldo": total_saldo,"costoV":total_costoV,"costoM":total_costoM,"utilidad":total_utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBruto,"totalMargen":total_margen_bruto,"labels":labels,"crecimiento":crecimiento,"margenOperacional":margenOperacional,"margenNeto":margenNeto,"porcentCostVentas":porcentCostVentas,"gastosVentas":gastosVentas,"porcentCostGastos":porcentCostGastos,"crecimiento_ventas":crecimiento_ventas,"crecimiento_ventas2":crecimiento_ventas2,"textoRadiaBarUltimo":textoRadiaBarUltimo,"textoRadiaBarAnterior":textoRadiaBarAnterior,"no_hay_data":no_hay_data})
+    return jsonify({"saldo": total_saldo,"costoV":total_costoV,"costoM":total_costoM,"utilidad":total_utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBruto,"totalMargen":total_margen_bruto,"labels":labels,"crecimiento":crecimiento,"margenOperacional":margenOperacional,"margenNeto":margenNeto,"porcentCostVentas":porcentCostVentas,"gastosVentas":gastosVentas,"porcentCostGastos":porcentCostGastos,"crecimiento_ventas":crecimiento_ventas,"crecimiento_ventas2":crecimiento_ventas2,"textoRadiaBarUltimo":textoRadiaBarUltimo,"textoRadiaBarAnterior":textoRadiaBarAnterior,"no_hay_data":no_hay_data,'max_saldo':max_saldo,"max_gastosVentas":max_gastosVentas,"max_gastosAdmon":max_gastosAdmon,"max_saldoCostos":max_saldoCostos,"roa":roa,"roe":roe,"labels_roaroe":labels_roaroe})
     
 @app.route("/api/get-reports", methods=["POST"])
 def get_reports():
