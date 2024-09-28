@@ -357,11 +357,11 @@ def siigo_account_anual():
             continue
         df.columns = ['Nivel',
                      'Transaccional','Codigo','Nombre','Saldo','Movimiento','Movimiento cred','Saldo final']
-        df[df=='Saldo final']=np.nan
+        df[df=='Saldo final']=np.NaN
         df = df.fillna(0)
         df['Saldo final']=df['Saldo final'].astype(str)
         print(df['Saldo final'])
-        df[df=='Codigo']=np.nan
+        df[df=='Codigo']=np.NaN
         df = df.fillna(0)
         print(df['Codigo'])
         df['Codigo']=df['Codigo'].astype(int)
@@ -527,7 +527,7 @@ def siigo_account_anual():
                     pass            
     "guardar en reports los campos de todos los años"
     siigo_account_trimestral(user,access_token)
-    print("los saldos de los años son ",saldo)
+    print("los saldos de los años son estos ",saldo)
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
 
@@ -652,11 +652,11 @@ def siigo_account_trimestral(user,token):
             continue
         df.columns = ['Nivel',
                      'Transaccional','Codigo','Nombre','Saldo','Movimiento','Movimiento cred','Saldo final']
-        df[df=='Saldo final']=np.nan
+        df[df=='Saldo final']=np.NaN
         df = df.fillna(0)
         df['Saldo final']=df['Saldo final'].astype(str)
         print(df['Saldo final'])
-        df[df=='Codigo']=np.nan
+        df[df=='Codigo']=np.NaN
         df = df.fillna(0)
         print(df['Codigo'])
         df['Codigo']=df['Codigo'].astype(int)
@@ -1511,11 +1511,11 @@ def data_ai(orders):
         df = pd.read_excel('balance_general.xlsx',header=8,engine='openpyxl')
         df.columns = ['Nivel',
                      'Transaccional','Codigo','Nombre','Saldo','Movimiento','Movimiento cred','Saldo final']
-        df[df=='Saldo final']=np.nan
+        df[df=='Saldo final']=np.NaN
         df = df.fillna(0)
         df['Saldo final']=df['Saldo final'].astype(str)
         print(df['Saldo final'])
-        df[df=='Codigo']=np.nan
+        df[df=='Codigo']=np.NaN
         df = df.fillna(0)
         print(df['Codigo'])
         df['Codigo']=df['Codigo'].astype(int)
