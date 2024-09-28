@@ -331,7 +331,7 @@ def siigo_account_anual():
             return jsonify({"success": False})
         
         try:
-            df = pd.read_excel(archivo,header=4)
+            df = pd.read_excel(archivo,header=4,engine='openpyxl')
         except Exception as err:
             print(err)
             lista.append(0.0)
@@ -627,7 +627,7 @@ def siigo_account_trimestral(user,token):
             return jsonify({"success": False})
         
         try:
-            df = pd.read_excel(archivo,header=4)
+            df = pd.read_excel(archivo,header=4,engine='openpyxl')
         except Exception as err:
             print(err)
             saldo.append(0.0)
