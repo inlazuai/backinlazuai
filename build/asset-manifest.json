@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.4dfb961f.css",
+    "main.js": "/static/js/main.ece2e1cd.js",
+    "static/js/787.cda612ba.chunk.js": "/static/js/787.cda612ba.chunk.js",
+    "static/media/inlazu-ai-1.svg": "/static/media/inlazu-ai-1.e0644ad42865d6c8c4a7405b33710cec.svg",
+    "static/media/INLAZUAI_ok.svg": "/static/media/INLAZUAI_ok.57998bd3ffb3256c6d5e64d019627470.svg",
+    "static/media/templogo2.svg": "/static/media/templogo2.16dd44e9a062ecc1180afd88c786b419.svg",
+    "static/media/templogoshort.svg": "/static/media/templogoshort.3a351d60941d6d570d6094cd700f081c.svg",
+    "index.html": "/index.html",
+    "main.4dfb961f.css.map": "/static/css/main.4dfb961f.css.map",
+    "main.ece2e1cd.js.map": "/static/js/main.ece2e1cd.js.map",
+    "787.cda612ba.chunk.js.map": "/static/js/787.cda612ba.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4dfb961f.css",
+    "static/js/main.ece2e1cd.js"
+  ]
+}
