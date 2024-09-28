@@ -12,7 +12,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from brokers.oanda import oanda_import
-from brokers.metatrader import metatrader_import, get_metatrader_orders, extract_data
 import xlrd
 import requests
 import locale
