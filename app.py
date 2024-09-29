@@ -526,7 +526,7 @@ def siigo_account_anual():
                 except:
                     pass            
     "guardar en reports los campos de todos los años"
-    siigo_account_trimestral(user,access_token)
+    #siigo_account_trimestral(user,access_token)
     print("los saldos de los años son estos ",saldo)
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
