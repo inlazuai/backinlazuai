@@ -534,10 +534,23 @@ def siigo_account_anual():
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
 
 @app.route("/api/siigo_account", methods=["POST"])
-def siigo_account_trimestral(user,token):
+def siigo_account_trimestral():
+    tokens = request.json   
+    params={
+    "username": tokens['id'],
+    "access_key": tokens['pass']
+    }
+    try:
+        response = requests.request("POST", "https://api.siigo.com/auth",json=params).json()
+        
+        access_token=response["access_token"]
+    except:
+        return jsonify({"success": False})
+    
+    
     headers ={
                "Content-Type":"application/json",
-               "Authorization" :token,
+               "Authorization" :access_token,
                "Partner-Id":"sigo"
              }
     lista_trimestral=[]
