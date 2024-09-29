@@ -536,6 +536,7 @@ def siigo_account_anual():
 @app.route("/api/siigo_account", methods=["POST"])
 def siigo_account_trimestral():
     tokens = request.json   
+    user=tokens['id']
     params={
     "username": tokens['id'],
     "access_key": tokens['pass']
