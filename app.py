@@ -514,6 +514,7 @@ def siigo_account_anual():
                     new_report = Reports(user_id=user,AÑO_2021=str(lista_años[0]),AÑO_2022=str(lista_años[1]),AÑO_2023=str(lista_años[2]),AÑO_2024=str(lista_años[3]),last_date=str(endDate))
                     db.session.add(new_report)
                     db.session.commit()
+                    db.session.close()
                 except Exception as err:
                     pass
     else:
@@ -523,10 +524,11 @@ def siigo_account_anual():
                         new_report.AÑO_2025=str(lista_años[1])
                     new_report.last_date=str(endDate)
                     db.session.commit()
+                    db.session.close()
                 except:
                     pass            
     "guardar en reports los campos de todos los años"
-    #siigo_account_trimestral(user,access_token)
+    siigo_account_trimestral(user,access_token)
     print("los saldos de los años son estos ",saldo)
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
@@ -810,6 +812,7 @@ def siigo_account_trimestral(user,token):
             new_report = Reports_filters(user_id=user,Año=str(year),saldos=str(saldo),costoV=str(ventas),costoM=str(materia_prima),utilidad=str(utilidad),gastosAdmon=str(gastosAdmon),gastosPer=str(gastosPer),gastosHono=str(gastosHono),gastosImp=str(gastosImp),gastosArrend=str(gastosArrend),gastosServ=str(gastosServ),gastosLegales=str(gastosLegales),gastosViaje=str(gastosViaje),gastosDiver=str(gastosDiver),margenBruto=str(margenBrut),margenOperacional=str(margenOperacional),margenNeto=str(margenNeto),gastosVentas=str(gastosVent),roa=str(roa_list),roe=str(roe_list),last_date=str(endDate))
             db.session.add(new_report)
             db.session.commit()
+            db.session.close()
           except:
             pass
       elif update:
