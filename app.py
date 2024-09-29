@@ -544,7 +544,7 @@ def siigo_account_trimestral(user,token):
     now = datetime.now()
     endDate = now.strftime('%Y-%m-%d')
     presentYear=int(now.strftime('%Y'))
-    years=[presentYear-2,presentYear-1,presentYear]
+    years=[presentYear-3,presentYear-2,presentYear-1,presentYear]
     monthActual=int(now.strftime('%m'))
     monthStart=1
     monthEnd=1
