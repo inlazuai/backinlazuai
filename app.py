@@ -581,7 +581,7 @@ def siigo_account_trimestral(user,token):
                years.append(yearLastDate)
                yearLastDate=yearLastDate+1
         update=True
-    years[2024]
+    years=[2024]
     for year in years:
       saldo=[]
       ventas=[]
