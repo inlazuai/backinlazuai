@@ -241,7 +241,7 @@ def siigo_validate_credentials():
         value= True
     return jsonify({"tieneData": value,"user_siigo":user_siigo,"password_siigo":password_siigo})
 
-#@app.route("/api/siigo_account", methods=["POST"])
+@app.route("/api/siigo_account", methods=["POST"])
 def siigo_account_anual():    
     tokens = request.json   
     params={
@@ -533,25 +533,11 @@ def siigo_account_anual():
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
 
-@app.route("/api/siigo_account", methods=["POST"])
-def siigo_account_trimestral():
-    tokens = request.json   
-    user=tokens['id']
-    params={
-    "username": tokens['id'],
-    "access_key": tokens['pass']
-    }
-    try:
-        response = requests.request("POST", "https://api.siigo.com/auth",json=params).json()
-        
-        access_token=response["access_token"]
-    except:
-        return jsonify({"success": False})
-    
-    
+
+def siigo_account_trimestral(user,token):
     headers ={
                "Content-Type":"application/json",
-               "Authorization" :access_token,
+               "Authorization" :token,
                "Partner-Id":"sigo"
              }
     lista_trimestral=[]
@@ -854,7 +840,6 @@ def siigo_account_trimestral():
       monthStart=1
       monthEnd=1
       update=False
-      return jsonify({"success": True})
       "guardar la informacion trimestral por c/año en la tabla reports_filters"
 
 @app.route("/api/import_reports_siigo", methods=["POST"])
