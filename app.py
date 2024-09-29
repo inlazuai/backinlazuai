@@ -241,7 +241,7 @@ def siigo_validate_credentials():
         value= True
     return jsonify({"tieneData": value,"user_siigo":user_siigo,"password_siigo":password_siigo})
 
-@app.route("/api/siigo_account", methods=["POST"])
+#@app.route("/api/siigo_account", methods=["POST"])
 def siigo_account_anual():    
     tokens = request.json   
     params={
@@ -533,7 +533,7 @@ def siigo_account_anual():
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
 
-
+@app.route("/api/siigo_account", methods=["POST"])
 def siigo_account_trimestral(user,token):
     headers ={
                "Content-Type":"application/json",
@@ -581,7 +581,6 @@ def siigo_account_trimestral(user,token):
                years.append(yearLastDate)
                yearLastDate=yearLastDate+1
         update=True
-    years=[2024]
     for year in years:
       saldo=[]
       ventas=[]
