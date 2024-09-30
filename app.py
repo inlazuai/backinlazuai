@@ -274,7 +274,7 @@ def siigo_account_anual():
     now = datetime.now()
     endDate = now.strftime('%Y-%m-%d')
     presentYear=int(now.strftime('%Y'))
-    years=[2021,2022,2023,2024]
+    years=[2022,2023,2024]
     update=False
     new_report=Reports.query.filter_by(user_id=user).first()
     if new_report!=None and new_report!=[]:
@@ -511,7 +511,8 @@ def siigo_account_anual():
         lista_años.append(lista)
     if not update:
                 try:   
-                    new_report = Reports(user_id=user,AÑO_2021=str(lista_años[0]),AÑO_2022=str(lista_años[1]),AÑO_2023=str(lista_años[2]),AÑO_2024=str(lista_años[3]),last_date=str(endDate))
+                    #new_report = Reports(user_id=user,AÑO_2021=str(lista_años[0]),AÑO_2022=str(lista_años[1]),AÑO_2023=str(lista_años[2]),AÑO_2024=str(lista_años[3]),last_date=str(endDate))
+                    new_report = Reports(user_id=user,AÑO_2022=str(lista_años[0]),AÑO_2023=str(lista_años[1]),AÑO_2024=str(lista_años[2]),last_date=str(endDate))
                     db.session.add(new_report)
                     db.session.commit()
                     db.session.close()
@@ -1219,37 +1220,58 @@ def get_reports_siigo():
             return jsonify({"saldo": [],"costoV":[],"costoM":[],"utilidad":[],"gastosAdmon":[],"gastosPer":[],"gastosHono":[],"gastosImp":[],"gastosArrend":[],"gastosServ":[],"gastosLegales":[],"gastosViaje":[],"gastosDiver":[],"margenBruto":[],"totalMargen":0.0,"labels":[],"crecimiento":[],"margenOperacional":[],"margenNeto":[],"porcentCostVentas":[],"gastosVentas":[],"porcentCostGastos":[],"crecimiento_ventas":0.0,"crecimiento_ventas2":0.0,"textoRadiaBarUltimo":"","textoRadiaBarAnterior":"","no_hay_data":no_hay_data})
         else:
             no_hay_data=False
-        AÑO_2021=eval(reports.AÑO_2021)
+        #AÑO_2021=eval(reports.AÑO_2021)
         AÑO_2022=eval(reports.AÑO_2022)
         AÑO_2023=eval(reports.AÑO_2023)
         AÑO_2024=eval(reports.AÑO_2024)
-        costov1=AÑO_2021[1]*-1
+        #costov1=AÑO_2021[1]*-1
         costov2=AÑO_2022[1]*-1
         costov3=AÑO_2023[1]*-1
         costov4=AÑO_2024[1]*-1
-        total_saldo=[AÑO_2021[0],AÑO_2022[0],AÑO_2023[0],AÑO_2024[0]]
-        total_costoV=[costov1,costov2,costov3,costov4]
-        total_costoM=[AÑO_2021[2],AÑO_2022[2],AÑO_2023[2],AÑO_2024[2]]
-        total_utilidad=[AÑO_2021[3],AÑO_2022[3],AÑO_2023[3],AÑO_2024[3]]
-        gastosAdmon=[AÑO_2021[4],AÑO_2022[4],AÑO_2023[4],AÑO_2024[4]]
-        gastosPer=[AÑO_2021[5],AÑO_2022[5],AÑO_2023[5],AÑO_2024[5]]
-        gastosHono=[AÑO_2021[6],AÑO_2022[6],AÑO_2023[6],AÑO_2024[6]]
-        gastosImp=[AÑO_2021[7],AÑO_2022[7],AÑO_2023[7],AÑO_2024[7]]
-        gastosArrend=[AÑO_2021[8],AÑO_2022[8],AÑO_2023[8],AÑO_2024[8]]
-        gastosServ=[AÑO_2021[9],AÑO_2022[9],AÑO_2023[9],AÑO_2024[9]]
-        gastosLegales=[AÑO_2021[10],AÑO_2022[10],AÑO_2023[10],AÑO_2024[10]]
-        gastosViaje=[AÑO_2021[11],AÑO_2022[11],AÑO_2023[11],AÑO_2024[11]]
-        gastosDiver=[AÑO_2021[12],AÑO_2022[12],AÑO_2023[12],AÑO_2024[12]]
-        margenBruto=[AÑO_2021[13],AÑO_2022[13],AÑO_2023[13],AÑO_2024[13]]
-        margenOperacional=[AÑO_2021[14],AÑO_2022[14],AÑO_2023[14],AÑO_2024[14]]
-        margenNeto=[AÑO_2021[15],AÑO_2022[15],AÑO_2023[15],AÑO_2024[15]]
-        gastosVentas=[AÑO_2021[16],AÑO_2022[16],AÑO_2023[16],AÑO_2024[16]]
-        roa=[AÑO_2021[17],AÑO_2022[17],AÑO_2023[17],AÑO_2024[17]]
-        roe=[AÑO_2021[18],AÑO_2022[18],AÑO_2023[18],AÑO_2024[18]]
+        #total_saldo=[AÑO_2021[0],AÑO_2022[0],AÑO_2023[0],AÑO_2024[0]]
+        total_saldo=[AÑO_2022[0],AÑO_2023[0],AÑO_2024[0]]
+        #total_costoV=[costov1,costov2,costov3,costov4]
+        total_costoV=[costov2,costov3,costov4]
+        #total_costoM=[AÑO_2021[2],AÑO_2022[2],AÑO_2023[2],AÑO_2024[2]]
+        total_costoM=[AÑO_2022[2],AÑO_2023[2],AÑO_2024[2]]
+        #total_utilidad=[AÑO_2021[3],AÑO_2022[3],AÑO_2023[3],AÑO_2024[3]]
+        total_utilidad=[AÑO_2022[3],AÑO_2023[3],AÑO_2024[3]]
+        #gastosAdmon=[AÑO_2021[4],AÑO_2022[4],AÑO_2023[4],AÑO_2024[4]]
+        gastosAdmon=[AÑO_2022[4],AÑO_2023[4],AÑO_2024[4]]
+        #gastosPer=[AÑO_2021[5],AÑO_2022[5],AÑO_2023[5],AÑO_2024[5]]
+        gastosPer=[AÑO_2022[5],AÑO_2023[5],AÑO_2024[5]]
+        #gastosHono=[AÑO_2021[6],AÑO_2022[6],AÑO_2023[6],AÑO_2024[6]]
+        gastosHono=[AÑO_2022[6],AÑO_2023[6],AÑO_2024[6]]
+        #gastosImp=[AÑO_2021[7],AÑO_2022[7],AÑO_2023[7],AÑO_2024[7]]
+        gastosImp=[AÑO_2022[7],AÑO_2023[7],AÑO_2024[7]]
+        #gastosArrend=[AÑO_2021[8],AÑO_2022[8],AÑO_2023[8],AÑO_2024[8]]
+        gastosArrend=[AÑO_2022[8],AÑO_2023[8],AÑO_2024[8]]
+        #gastosServ=[AÑO_2021[9],AÑO_2022[9],AÑO_2023[9],AÑO_2024[9]]
+        gastosServ=[AÑO_2022[9],AÑO_2023[9],AÑO_2024[9]]
+        #gastosLegales=[AÑO_2021[10],AÑO_2022[10],AÑO_2023[10],AÑO_2024[10]]
+        gastosLegales=[AÑO_2022[10],AÑO_2023[10],AÑO_2024[10]]
+        #gastosViaje=[AÑO_2021[11],AÑO_2022[11],AÑO_2023[11],AÑO_2024[11]]
+        gastosViaje=[AÑO_2022[11],AÑO_2023[11],AÑO_2024[11]]
+        #gastosDiver=[AÑO_2021[12],AÑO_2022[12],AÑO_2023[12],AÑO_2024[12]]
+        gastosDiver=[AÑO_2022[12],AÑO_2023[12],AÑO_2024[12]]
+        #margenBruto=[AÑO_2021[13],AÑO_2022[13],AÑO_2023[13],AÑO_2024[13]]
+        margenBruto=[AÑO_2022[13],AÑO_2023[13],AÑO_2024[13]]
+        #margenOperacional=[AÑO_2021[14],AÑO_2022[14],AÑO_2023[14],AÑO_2024[14]]
+        margenOperacional=[AÑO_2022[14],AÑO_2023[14],AÑO_2024[14]]
+        #margenNeto=[AÑO_2021[15],AÑO_2022[15],AÑO_2023[15],AÑO_2024[15]]
+        margenNeto=[AÑO_2022[15],AÑO_2023[15],AÑO_2024[15]]
+        #gastosVentas=[AÑO_2021[16],AÑO_2022[16],AÑO_2023[16],AÑO_2024[16]]
+        gastosVentas=[AÑO_2022[16],AÑO_2023[16],AÑO_2024[16]]
+        #roa=[AÑO_2021[17],AÑO_2022[17],AÑO_2023[17],AÑO_2024[17]]
+        roa=[AÑO_2022[17],AÑO_2023[17],AÑO_2024[17]]
+        #roe=[AÑO_2021[18],AÑO_2022[18],AÑO_2023[18],AÑO_2024[18]]
+        roe=[AÑO_2022[18],AÑO_2023[18],AÑO_2024[18]]
+        """
         try:
             valorCrecim1=round(float(((AÑO_2022[0]/AÑO_2021[0])-1)*100))
         except:
             valorCrecim1=0.0
+        """
         try:
             valorCrecim2=round(float(((AÑO_2023[0]/AÑO_2022[0])-1)*100))
         except:
@@ -1258,10 +1280,12 @@ def get_reports_siigo():
             valorrCrecim3=round(float(((AÑO_2024[0]/AÑO_2023[0])-1)*100))
         except:
             valorrCrecim3=0.0
+        """
         try:
             procentCostVentas1=abs(round(float((AÑO_2021[1]/AÑO_2021[0])*100)))
         except:
             procentCostVentas1=0.0
+        """
         try:
             procentCostVentas2=abs(round(float((AÑO_2022[1]/AÑO_2022[0])*100)))
         except:
@@ -1275,11 +1299,12 @@ def get_reports_siigo():
         except:
             procentCostVentas4=0.0   
             
-            
+        """
         try:
             procentCostGastos1=round(float(((AÑO_2021[4]+AÑO_2021[16])/AÑO_2021[0])*100))
         except:
             procentCostGastos1=0.0
+        """
         try:
             procentCostGastos2=round(float(((AÑO_2022[4]+AÑO_2022[16])/AÑO_2022[0])*100))
         except:
@@ -1302,10 +1327,14 @@ def get_reports_siigo():
             crecimiento_ventas2=0.0
         textoRadiaBarUltimo="2024-2023"
         textoRadiaBarAnterior="2023-2022"
-        crecimiento=[0.0,valorCrecim1,valorCrecim2,valorrCrecim3]
-        porcentCostVentas=[procentCostVentas1,procentCostVentas2,procentCostVentas3,procentCostVentas4]
-        porcentCostGastos=[procentCostGastos1,procentCostGastos2,procentCostGastos3,procentCostGastos4]
-        labels=['2021','2022','2023','2024']
+        #crecimiento=[0.0,valorCrecim1,valorCrecim2,valorrCrecim3]
+        crecimiento=[0.0,valorCrecim2,valorrCrecim3]
+        #porcentCostVentas=[procentCostVentas1,procentCostVentas2,procentCostVentas3,procentCostVentas4]
+        porcentCostVentas=[procentCostVentas2,procentCostVentas3,procentCostVentas4]
+        #porcentCostGastos=[procentCostGastos1,procentCostGastos2,procentCostGastos3,procentCostGastos4]
+        porcentCostGastos=[procentCostGastos2,procentCostGastos3,procentCostGastos4]
+        #labels=['2021','2022','2023','2024']
+        labels=['2022','2023','2024']
         año=0
         while año<len(roa):
          labels_roaroe.append(labels[año])
