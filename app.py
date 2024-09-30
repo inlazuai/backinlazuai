@@ -840,8 +840,8 @@ def siigo_account_trimestral(user,token):
       monthStart=1
       monthEnd=1
       update=False
-      return jsonify({"success": True})
-      "guardar la informacion trimestral por c/año en la tabla reports_filters"
+    return jsonify({"success": True})
+    "guardar la informacion trimestral por c/año en la tabla reports_filters"
 
 @app.route("/api/import_reports_siigo", methods=["POST"])
 def import_reports_siigo():
