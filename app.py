@@ -601,6 +601,8 @@ def siigo_account_trimestral(user,filter=None):
                years.append(yearLastDate)
                yearLastDate=yearLastDate+1
         update=True
+    if new_report!=None and new_report!=[] and int(filter)<presentYear:    
+        return jsonify({"success": True})
     if filter!=None:
         years=[filter]
     for year in years:
