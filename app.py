@@ -228,7 +228,7 @@ def import_trades():
 @app.route("/api/siigo_validate_credentials", methods=["POST"])
 def siigo_validate_credentials():
     tokens = request.json
-    user=tokens['user']    
+    user=tokens['user']
     accountid=''
     user_siigo=''
     password_siigo=''
@@ -244,6 +244,8 @@ def siigo_validate_credentials():
 @app.route("/api/siigo_account", methods=["POST"])
 def siigo_account_anual():    
     tokens = request.json   
+    username=tokens['id']
+    password=tokens['pass']
     params={
     "username": tokens['id'],
     "access_key": tokens['pass']
@@ -529,13 +531,30 @@ def siigo_account_anual():
                 except:
                     pass            
     "guardar en reports los campos de todos los años"
-    siigo_account_trimestral(user,access_token)
+    #siigo_account_trimestral(user,access_token)
     print("los saldos de los años son estos ",saldo)
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
 
-
-def siigo_account_trimestral(user,token):
+def siigo_account_trimestral(user,filter=None):
+    cedentials=siigo_connections.query.filter_by(userid=user).first()
+    if cedentials!=None and cedentials!=[]:
+        user_siigo=str(cedentials.user)
+        password_siigo=str(cedentials.password)
+    else:
+        return jsonify({"success": False})
+        
+    params={
+    "username": str(user_siigo),
+    "access_key": str(password_siigo)
+    }
+    try:
+        response = requests.request("POST", "https://api.siigo.com/auth",json=params).json()
+        
+        token=response["access_token"]
+    except:
+        return jsonify({"success": False})
+    
     headers ={
                "Content-Type":"application/json",
                "Authorization" :token,
@@ -550,7 +569,7 @@ def siigo_account_trimestral(user,token):
     monthStart=1
     monthEnd=1
     update=False
-    new_report=Reports_filters.query.filter_by(user_id=user).order_by(Reports_filters.id.desc()).first()
+    new_report=Reports_filters.query.filter_by(user_id=user,Año=str(filter)).order_by(Reports_filters.id.desc()).first()
     if new_report!=None and new_report!=[]:
         update_saldos=eval(new_report.saldos)
         update_costoV=eval(new_report.costoV)
@@ -582,6 +601,8 @@ def siigo_account_trimestral(user,token):
                years.append(yearLastDate)
                yearLastDate=yearLastDate+1
         update=True
+    if filter!=None:
+        years=[filter]
     for year in years:
       saldo=[]
       ventas=[]
@@ -1050,6 +1071,7 @@ def get_reports_siigo():
     filters=data['filters']
     labels_roaroe=[]
     if filters['brokers']!=[]:
+        siigo_account_trimestral(data["userId"], int(filters['brokers'][0]))
         reports = Reports_filters.query.filter_by(user_id=data["userId"],Año=str(filters['brokers'][0])).first()
         if reports==None:
             no_hay_data=True
