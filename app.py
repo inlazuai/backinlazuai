@@ -1056,6 +1056,7 @@ def get_chartdata():
 
 @app.route("/api/get-reports_siigo", methods=["POST"])
 def get_reports_siigo():
+    print("entra aca")
     data = request.json
     filters=data['filters']
     labels_roaroe=[]
