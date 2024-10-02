@@ -657,62 +657,62 @@ def siigo_account_trimestral(user,filter=None,token=None):
         df[df=='Codigo']=np.nan
         df = df.fillna(0)
         df['Codigo']=df['Codigo'].astype(int)
-        cont = df[df['Codigo'] == 41]
+        cont = df.loc[df['Codigo'] == 41]
         try:
-            costoVentas= df[df['Codigo'] == 7]
+            costoVentas= df.loc[df['Codigo'] == 7]
         except:
-            costoVentas= df[df['Codigo'] == 6]
-        costoMateria= df[df['Codigo'] == 61]
+            costoVentas= df.loc[df['Codigo'] == 6]
+        costoMateria= df.loc[df['Codigo'] == 61]
         try:
-            ingresos_no_operac=abs(float(df[df['Codigo'] == 42]['Saldo final']))
+            ingresos_no_operac=abs(float(df.loc[df['Codigo'] == 42]['Saldo final']))
         except:
             ingresos_no_operac=0.0
         try:
-            gastos_administracion=abs(float(df[df['Codigo'] == 51]['Saldo final']))
+            gastos_administracion=abs(float(df.loc[df['Codigo'] == 51]['Saldo final']))
         except:
             gastos_administracion=0.0
         try:
-            gastos_ventas=abs(float(df[df['Codigo'] == 52]['Saldo final']))
+            gastos_ventas=abs(float(df.loc[df['Codigo'] == 52]['Saldo final']))
         except:
             gastos_ventas=0.0
         try:
-            gastos_no_operacionales=abs(float(df[df['Codigo'] == 53]['Saldo final']))
+            gastos_no_operacionales=abs(float(df.loc[df['Codigo'] == 53]['Saldo final']))
         except:
             gastos_no_operacionales=0.0
         try:
-            impuestos=abs(float(df[df['Codigo'] == 54]['Saldo final']))
+            impuestos=abs(float(df.loc[df['Codigo'] == 54]['Saldo final']))
         except:
             impuestos=0.0
         try:
-            gastos_personal=abs(float(df[df['Codigo'] == 5105]['Saldo final']))
+            gastos_personal=abs(float(df.loc[df['Codigo'] == 5105]['Saldo final']))
         except:
             gastos_personal=0.0
         try:
-            gastos_honorarios=abs(float(df[df['Codigo'] == 5110]['Saldo final']))
+            gastos_honorarios=abs(float(df.loc[df['Codigo'] == 5110]['Saldo final']))
         except:
             gastos_honorarios=0.0
         try:
-            gastos_impuestos=abs(float(df[df['Codigo'] == 5115]['Saldo final']))
+            gastos_impuestos=abs(float(df.loc[df['Codigo'] == 5115]['Saldo final']))
         except:
             gastos_impuestos=0.0
         try:
-            gastos_arrendamientos=abs(float(df[df['Codigo'] == 5120]['Saldo final']))
+            gastos_arrendamientos=abs(float(df.loc[df['Codigo'] == 5120]['Saldo final']))
         except:
             gastos_arrendamientos=0.0
         try:
-            gastos_servicios=abs(float(df[df['Codigo'] == 5135]['Saldo final']))
+            gastos_servicios=abs(float(df.loc[df['Codigo'] == 5135]['Saldo final']))
         except:
             gastos_servicios=0.0
         try:
-            gastos_legales=abs(float(df[df['Codigo'] == 5140]['Saldo final']))
+            gastos_legales=abs(float(df.loc[df['Codigo'] == 5140]['Saldo final']))
         except:
             gastos_legales=0.0
         try:
-            gastos_viajes=abs(float(df[df['Codigo'] == 5155]['Saldo final']))
+            gastos_viajes=abs(float(df.loc[df['Codigo'] == 5155]['Saldo final']))
         except:
             gastos_viajes=0.0
         try:
-            gastos_diversos=abs(float(df[df['Codigo'] == 5195]['Saldo final']))
+            gastos_diversos=abs(float(df.loc[df['Codigo'] == 5195]['Saldo final']))
         except:
             gastos_diversos=0.0
         try:
@@ -744,11 +744,11 @@ def siigo_account_trimestral(user,filter=None,token=None):
         except:
             numeroCostoMateria=0.0
         try:
-            activos=abs(float(df[df['Codigo'] == 1]['Saldo final']))
+            activos=abs(float(df.loc[df['Codigo'] == 1]['Saldo final']))
         except Exception as err:
             activos=0.0
         try:
-            patrimonio=abs(float(df[df['Codigo'] == 3]['Saldo final']))
+            patrimonio=abs(float(df.loc[df['Codigo'] == 3]['Saldo final']))
         except:
             patrimonio=0.0
             
