@@ -321,21 +321,18 @@ def siigo_account_anual():
         try:
             response = requests.request("POST", "https://api.siigo.com/v1/test-balance-report", headers=headers,json=params).json()
             urlArchivo=response['file_url']  
-            print(urlArchivo)
             response = requests.get(urlArchivo)
             archivo=user+'.xlsx'
             #remove("balance_general.xlsx")
             with open(archivo, 'wb') as file:
                  file.write(response.content)
             #webbrowser.get(chrome_path).open(urlArchivo)
-            print("exito")
         except Exception as err:
             return jsonify({"success": False})
         
         try:
             df = pd.read_excel(archivo,header=4,engine='openpyxl')
         except Exception as err:
-            print(err)
             lista.append(0.0)
             lista.append(0.0)
             lista.append(0.0)
@@ -362,12 +359,9 @@ def siigo_account_anual():
         df[df=='Saldo final']=np.nan
         df = df.fillna(0)
         df['Saldo final']=df['Saldo final'].astype(str)
-        print(df['Saldo final'])
         df[df=='Codigo']=np.nan
         df = df.fillna(0)
-        print(df['Codigo'])
         df['Codigo']=df['Codigo'].astype(int)
-        print(df['Codigo'])
         cont = df[df['Codigo'] == 41]
         try:
             costoVentas= df[df['Codigo'] == 7]
@@ -429,7 +423,6 @@ def siigo_account_anual():
             gastos_diversos=abs(float(df[df['Codigo'] == 5195]['Saldo final']))
         except:
             gastos_diversos=0.0
-        print(cont['Saldo final'])
         try:
            numero=abs(float(cont['Saldo final']))
         except:
@@ -641,21 +634,18 @@ def siigo_account_trimestral(user,filter=None):
         try:
             response = requests.request("POST", "https://api.siigo.com/v1/test-balance-report", headers=headers,json=params).json()
             urlArchivo=response['file_url']  
-            print(urlArchivo)
             response = requests.get(urlArchivo)
             archivo=user+'.xlsx'
             #remove('balance_general.xlsx')
             with open(archivo, 'wb') as file:
                  file.write(response.content)
             #webbrowser.get(chrome_path).open(urlArchivo)
-            print("exito")
         except Exception as err:
             return jsonify({"success": False})
         
         try:
             df = pd.read_excel(archivo,header=4,engine='openpyxl')
         except Exception as err:
-            print(err)
             saldo.append(0.0)
             ventas.append(0.0)
             materia_prima.append(0.0)
@@ -681,12 +671,9 @@ def siigo_account_trimestral(user,filter=None):
         df[df=='Saldo final']=np.nan
         df = df.fillna(0)
         df['Saldo final']=df['Saldo final'].astype(str)
-        print(df['Saldo final'])
         df[df=='Codigo']=np.nan
         df = df.fillna(0)
-        print(df['Codigo'])
         df['Codigo']=df['Codigo'].astype(int)
-        print(df['Codigo'])
         cont = df[df['Codigo'] == 41]
         try:
             costoVentas= df[df['Codigo'] == 7]
@@ -745,7 +732,6 @@ def siigo_account_trimestral(user,filter=None):
             gastos_diversos=abs(float(df[df['Codigo'] == 5195]['Saldo final']))
         except:
             gastos_diversos=0.0
-        print(cont['Saldo final'])
         try:
             numero=abs(float(cont['Saldo final']))
         except:
@@ -1423,7 +1409,6 @@ def get_reports():
     for trade in trades:
         ordenesDict={'open_date':trade.open_date,'status':trade.status}
         ordenes.append(ordenesDict)
-        print(trade.status)
         if len(selectedIds) > 0 and not trade.trade_id in selectedIds:
             continue
         if len(brokers) > 0 and not trade.broker in brokers:
@@ -1553,14 +1538,12 @@ def data_ai(orders):
         try:
             response = requests.request("POST", "https://api.siigo.com/v1/test-balance-report", headers=headers,json=params).json()
             urlArchivo=response['file_url']  
-            print(urlArchivo)
             response = requests.get(urlArchivo)
             
             
             with open('balance_general.xlsx', 'wb') as file:
                  file.write(response.content)
             #webbrowser.get(chrome_path).open(urlArchivo)
-            print("exito")
         except Exception as err:
             print("error")  
         
@@ -1571,14 +1554,10 @@ def data_ai(orders):
         df[df=='Saldo final']=np.nan
         df = df.fillna(0)
         df['Saldo final']=df['Saldo final'].astype(str)
-        print(df['Saldo final'])
         df[df=='Codigo']=np.nan
         df = df.fillna(0)
-        print(df['Codigo'])
         df['Codigo']=df['Codigo'].astype(int)
-        print(df['Codigo'])
         cont = df[df['Codigo'] == 41]
-        print(cont['Saldo final'])
         numero=abs(float(cont['Saldo final']))
         saldo.append(numero)
     
