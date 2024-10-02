@@ -1361,6 +1361,7 @@ def get_reports_siigo():
         #total_margen_bruto=float(margenBruto[0])+float(margenBruto[1])+float(margenBruto[2])+float(margenBruto[3])
         total_margen_bruto=0.0
     print("reports")
+    x=int(input("ingrese un valor: "))
     return jsonify({"saldo": total_saldo,"costoV":total_costoV,"costoM":total_costoM,"utilidad":total_utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBruto,"totalMargen":total_margen_bruto,"labels":labels,"crecimiento":crecimiento,"margenOperacional":margenOperacional,"margenNeto":margenNeto,"porcentCostVentas":porcentCostVentas,"gastosVentas":gastosVentas,"porcentCostGastos":porcentCostGastos,"crecimiento_ventas":crecimiento_ventas,"crecimiento_ventas2":crecimiento_ventas2,"textoRadiaBarUltimo":textoRadiaBarUltimo,"textoRadiaBarAnterior":textoRadiaBarAnterior,"no_hay_data":no_hay_data,'max_saldo':max_saldo,"max_gastosVentas":max_gastosVentas,"max_gastosAdmon":max_gastosAdmon,"max_saldoCostos":max_saldoCostos,"roa":roa,"roe":roe,"labels_roaroe":labels_roaroe})
     
 @app.route("/api/get-reports", methods=["POST"])
