@@ -1493,6 +1493,7 @@ def get_reports():
         if float(trade.ret_percent) < biggestPercentLose:
             biggestPercentLose = float(trade.ret_percent)
     saldo=data_ai(ordenes)
+    print("finished")
     return jsonify({"totalReturnY": total_return_y, "totalReturnX": total_return_x, "totalReturn": total_return, "totalReturnNet": total_return_net, "totalReturnNetArray": total_return_net_array, "totalDates": total_dates, "dailyReturn": daily_return, "returnWin": return_winner, "returnWinTotal": return_winner_total, "returnLose": return_loser, "returnLoseTotal": return_loser_total, "returnLong": return_long, "returnLongTotal": return_long_total, "returnShort": return_short, "returnShortTotal": return_short_total, "biggestProfit": biggestProfit, "biggestLose": biggestLose, "totalClosedTrades": closed_trades_total, "closedTrades": closed_trades, "totalOpenTrades": open_trades_total, "openTrades": open_trades, "totalTrades": len(total_return_x), "dailyTrades": daily_trades, "totalWinner": win_count, "totalLoser": loss_count, "dailyWinners": win_total, "dailyLosers": loss_total, "beCount": be_count, "dailyBe": be_total, "returnPercentSeries": return_percent_series, "returnPercentTotal": return_percent_total, "biggestPercentProfit": biggestPercentProfit, "biggestPercentLose": biggestPercentLose, "percentProfits": percentProfits, "percentLoses": percentLoses, "saldo":saldo})
 
 def pie_chart(df,col, title):
