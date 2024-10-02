@@ -46,6 +46,7 @@ class siigo_connections(db.Model):
     userid = db.Column(db.String(50))
     user = db.Column(db.String(500))
     password = db.Column(db.String(500))
+    token= db.Column(db.String(500))
    
 
 class Trades(db.Model):
@@ -268,7 +269,7 @@ def siigo_account_anual():
     new_report=siigo_connections.query.filter_by(userid=user).first()
     if new_report==None or new_report==[]:
         try:   
-            new_report = siigo_connections(userid=user,user=tokens['id'],password=tokens['pass'])
+            new_report = siigo_connections(userid=user,user=tokens['id'],password=tokens['pass'],token=str(access_token))
             db.session.add(new_report)
             db.session.commit()
         except Exception as err:
@@ -529,25 +530,7 @@ def siigo_account_anual():
     return jsonify({"success": True})
     #return jsonify({"success": True,"saldo":saldo,"costoV":ventas,"costoM":materia_prima,"utilidad":utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBrut})
 
-def siigo_account_trimestral(user,filter=None):
-    cedentials=siigo_connections.query.filter_by(userid=user).first()
-    if cedentials!=None and cedentials!=[]:
-        user_siigo=str(cedentials.user)
-        password_siigo=str(cedentials.password)
-    else:
-        return jsonify({"success": False})
-        
-    params={
-    "username": str(user_siigo),
-    "access_key": str(password_siigo)
-    }
-    try:
-        response = requests.request("POST", "https://api.siigo.com/auth",json=params).json()
-        
-        token=response["access_token"]
-    except:
-        return jsonify({"success": False})
-    
+def siigo_account_trimestral(user,filter=None,token=None):
     headers ={
                "Content-Type":"application/json",
                "Authorization" :token,
@@ -1061,7 +1044,11 @@ def get_reports_siigo():
     filters=data['filters']
     labels_roaroe=[]
     if filters['brokers']!=[]:
-        siigo_account_trimestral(data["userId"], int(filters['brokers'][0]))
+        connections = siigo_connections.query.filter_by(userid=data["userId"]).first()
+        if connections!=None and connections!=[]:
+           token=connections.token
+        if token!=None and token!='':
+           siigo_account_trimestral(data["userId"], int(filters['brokers'][0]),token)
         reports = Reports_filters.query.filter_by(user_id=data["userId"],Año=str(filters['brokers'][0])).first()
         if reports==None:
             no_hay_data=True
