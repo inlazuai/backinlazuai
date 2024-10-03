@@ -17,6 +17,8 @@ import requests
 import locale
 import time as tt
 from os import remove
+import asyncio
+
 
 load_dotenv()
 
@@ -602,7 +604,7 @@ def siigo_account_trimestral(user,filter=None,token=None):
       margenNeto=[]
       roa_list=[]
       roe_list=[]
-      while monthStart <= 9:
+      while monthStart <= 12:
         if(year==presentYear and monthStart>=monthActual):
            break
         params={
@@ -1039,7 +1041,7 @@ def get_chartdata():
     return jsonify({"accumulative_return": accumulative_return, "accumulative_return_total": accumulative_return_total, "xvalue_all": xvalue_all, "profit_factor": profit_factor, "avg_profit_factor": total_profit_factor / len(profit_factor), "avg_return": avg_return, "avg_return_total": avg_return_total / len(trades), "win_ratio": {"total": len(trades), "winning": win_count}, "pnl_total": pnl_total, "pnl_change": pnl_change, "pnl_day": pnl_day, "volume_day": volume_day, "total_pnl": total_pnl, "daily_pnl": daily_pnl, "daily_volume": daily_volume, "total_win_rate": total_win_rate, "daily_win_rate": daily_win_rate, "total_win_or_loss_score": total_win_or_loss_score})
 
 @app.route("/api/get-reports_siigo", methods=["POST"])
-def get_reports_siigo():
+async def get_reports_siigo():
     print("entra aca")
     data = request.json
     filters=data['filters']
