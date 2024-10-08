@@ -367,10 +367,18 @@ def siigo_account_anual():
         df = df.fillna(0)
         df['Codigo']=df['Codigo'].astype(int)
         cont = df[df['Codigo'] == 41]
+        costoVentas1=0.0
+        costoVentas2=0.0
         try:
-            costoVentas= df[df['Codigo'] == 7]
+            costoVentas1=abs(float(df.loc[df['Codigo'] == 7]['Saldo final']))
+            try:
+                costoVentas2=abs(float(df.loc[df['Codigo'] == 6]['Saldo final']))
+            except:
+                costoVentas2=0.0
+                pass
         except:
-            costoVentas= df[df['Codigo'] == 6]
+            costoVentas1=0.0
+            costoVentas2=abs(float(df.loc[df['Codigo'] == 6]['Saldo final']))
         try:
             costoMateria= df[df['Codigo'] == 61]
         except:
@@ -432,7 +440,7 @@ def siigo_account_anual():
         except:
            numero=0.0 
         try:
-           numeroCosto=abs(float(costoVentas['Saldo final']))
+           numeroCosto=costoVentas1+costoVentas2 
            numeroCosto=numeroCosto*-1
         except:
            numeroCosto=0.0
@@ -661,10 +669,18 @@ def siigo_account_trimestral(user,filter=None,token=None):
         df = df.fillna(0)
         df['Codigo']=df['Codigo'].astype(int)
         cont = df.loc[df['Codigo'] == 41]
+        costoVentas1=0.0
+        costoVentas2=0.0
         try:
-            costoVentas= df.loc[df['Codigo'] == 7]
+            costoVentas1=abs(float(df.loc[df['Codigo'] == 7]['Saldo final']))
+            try:
+                costoVentas2=abs(float(df.loc[df['Codigo'] == 6]['Saldo final']))
+            except:
+                costoVentas2=0.0
+                pass
         except:
-            costoVentas= df.loc[df['Codigo'] == 6]
+            costoVentas1=0.0
+            costoVentas2=abs(float(df.loc[df['Codigo'] == 6]['Saldo final']))
         costoMateria= df.loc[df['Codigo'] == 61]
         try:
             ingresos_no_operac=abs(float(df.loc[df['Codigo'] == 42]['Saldo final']))
@@ -723,7 +739,7 @@ def siigo_account_trimestral(user,filter=None,token=None):
         except:
             numero=0.0
         try:
-            numeroCosto=abs(float(costoVentas['Saldo final']))
+            numeroCosto=costoVentas1+costoVentas2
             numeroCosto=numeroCosto*-1
         except:
             numeroCosto=0.0
@@ -1083,6 +1099,15 @@ async def get_reports_siigo():
         gastosVentas=eval(reports.gastosVentas)
         roa=eval(reports.roa)
         roe=eval(reports.roe)
+        total_ventas=0
+        total_costos=0
+        total_gastos=0
+        for i in total_saldo:
+            total_ventas+=float(i)
+        for i in total_costoV:
+            total_costos+=float(i)
+        for i in gastosVentas:
+            total_gastos+=float(i)
         #i=len(total_saldo)-1
         i=1
         crecimiento=[]
@@ -1232,8 +1257,12 @@ async def get_reports_siigo():
         costov4=AÑO_2024[1]*-1
         #total_saldo=[AÑO_2021[0],AÑO_2022[0],AÑO_2023[0],AÑO_2024[0]]
         total_saldo=[AÑO_2022[0],AÑO_2023[0],AÑO_2024[0]]
+        
+        total_ventas=round((float(AÑO_2022[0])+float(AÑO_2023[0])+float(AÑO_2024[0])),2)
         #total_costoV=[costov1,costov2,costov3,costov4]
         total_costoV=[costov2,costov3,costov4]
+        
+        total_costos=round((float(costov2)+float(costov3)+float(costov4)),2)
         #total_costoM=[AÑO_2021[2],AÑO_2022[2],AÑO_2023[2],AÑO_2024[2]]
         total_costoM=[AÑO_2022[2],AÑO_2023[2],AÑO_2024[2]]
         #total_utilidad=[AÑO_2021[3],AÑO_2022[3],AÑO_2023[3],AÑO_2024[3]]
@@ -1264,6 +1293,8 @@ async def get_reports_siigo():
         margenNeto=[AÑO_2022[15],AÑO_2023[15],AÑO_2024[15]]
         #gastosVentas=[AÑO_2021[16],AÑO_2022[16],AÑO_2023[16],AÑO_2024[16]]
         gastosVentas=[AÑO_2022[16],AÑO_2023[16],AÑO_2024[16]]
+        
+        total_gastos=round((float(AÑO_2022[16])+float(AÑO_2023[16])+float(AÑO_2024[16])),2)
         #roa=[AÑO_2021[17],AÑO_2022[17],AÑO_2023[17],AÑO_2024[17]]
         roa=[AÑO_2022[17],AÑO_2023[17],AÑO_2024[17]]
         #roe=[AÑO_2021[18],AÑO_2022[18],AÑO_2023[18],AÑO_2024[18]]
@@ -1351,7 +1382,7 @@ async def get_reports_siigo():
         #total_margen_bruto=float(margenBruto[0])+float(margenBruto[1])+float(margenBruto[2])+float(margenBruto[3])
         total_margen_bruto=0.0
     print("reports")
-    return jsonify({"saldo": total_saldo,"costoV":total_costoV,"costoM":total_costoM,"utilidad":total_utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBruto,"totalMargen":total_margen_bruto,"labels":labels,"crecimiento":crecimiento,"margenOperacional":margenOperacional,"margenNeto":margenNeto,"porcentCostVentas":porcentCostVentas,"gastosVentas":gastosVentas,"porcentCostGastos":porcentCostGastos,"crecimiento_ventas":crecimiento_ventas,"crecimiento_ventas2":crecimiento_ventas2,"textoRadiaBarUltimo":textoRadiaBarUltimo,"textoRadiaBarAnterior":textoRadiaBarAnterior,"no_hay_data":no_hay_data,'max_saldo':max_saldo,"max_gastosVentas":max_gastosVentas,"max_gastosAdmon":max_gastosAdmon,"max_saldoCostos":max_saldoCostos,"roa":roa,"roe":roe,"labels_roaroe":labels_roaroe})
+    return jsonify({"saldo": total_saldo,"costoV":total_costoV,"costoM":total_costoM,"utilidad":total_utilidad,"gastosAdmon":gastosAdmon,"gastosPer":gastosPer,"gastosHono":gastosHono,"gastosImp":gastosImp,"gastosArrend":gastosArrend,"gastosServ":gastosServ,"gastosLegales":gastosLegales,"gastosViaje":gastosViaje,"gastosDiver":gastosDiver,"margenBruto":margenBruto,"totalMargen":total_margen_bruto,"labels":labels,"crecimiento":crecimiento,"margenOperacional":margenOperacional,"margenNeto":margenNeto,"porcentCostVentas":porcentCostVentas,"gastosVentas":gastosVentas,"porcentCostGastos":porcentCostGastos,"crecimiento_ventas":crecimiento_ventas,"crecimiento_ventas2":crecimiento_ventas2,"textoRadiaBarUltimo":textoRadiaBarUltimo,"textoRadiaBarAnterior":textoRadiaBarAnterior,"no_hay_data":no_hay_data,'max_saldo':max_saldo,"max_gastosVentas":max_gastosVentas,"max_gastosAdmon":max_gastosAdmon,"max_saldoCostos":max_saldoCostos,"roa":roa,"roe":roe,"labels_roaroe":labels_roaroe,"total_ventas":total_ventas,"total_costos":total_costos,"total_gastos":total_gastos})
     
 @app.route("/api/get-reports", methods=["POST"])
 def get_reports():
