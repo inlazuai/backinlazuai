@@ -1173,7 +1173,10 @@ async def get_reports_siigo():
         posicion=0
         for i in utilidadOperacional:
             suma+=float(i)
-            roa=abs(round((suma/activos[posicion])*100,0))
+            try:
+                roa=abs(round((suma/activos[posicion])*100,0))
+            except:
+                roa=0.0
             lista_roa.append(roa)
             posicion+=1
             
@@ -1184,14 +1187,19 @@ async def get_reports_siigo():
         posicion=0
         for i in utilidadNeta:
             suma+=float(i)
-            roe=abs(round((suma/patrimonio[posicion])*100,0))
+            try:
+                roe=abs(round((suma/patrimonio[posicion])*100,0))
+            except:
+                roe=0.0
             lista_roe.append(roe)
             posicion+=1
         
         ventasEbitda=float(total_saldo[len(total_saldo)-1])
         ebitdaTotal=float(ebitda[len(ebitda)-1])
-        
-        ebitdaTotal=round((ebitdaTotal/ventasEbitda)*100,0)        
+        try:
+            ebitdaTotal=round((ebitdaTotal/ventasEbitda)*100,0)     
+        except:
+            ebitdaTotal=0.0   
         #i=len(total_saldo)-1
         i=1
         crecimiento=[]
@@ -1398,7 +1406,10 @@ async def get_reports_siigo():
         posicion=0
         for i in utilidadOperacional:
             suma+=float(i)
-            roa=abs(round((suma/activos[posicion])*100,0))
+            try:
+                roa=abs(round((suma/activos[posicion])*100,0))
+            except:
+                roa=0.0
             lista_roa.append(roa)
             posicion+=1
             
@@ -1406,11 +1417,16 @@ async def get_reports_siigo():
         posicion=0
         for i in utilidadNeta:
             suma+=float(i)
-            roe=abs(round((suma/patrimonio[posicion])*100,0))
+            try:
+                roe=abs(round((suma/patrimonio[posicion])*100,0))
+            except:
+                roe=0.0
             lista_roe.append(roe)
             posicion+=1
-            
-        ebitdaTotal=round((ebitda/ventasEbitda)*100,0)
+        try:    
+            ebitdaTotal=round((ebitda/ventasEbitda)*100,0)
+        except:
+            ebitdaTotal=0.0
         """
         try:
             valorCrecim1=round(float(((AÑO_2022[0]/AÑO_2021[0])-1)*100))
